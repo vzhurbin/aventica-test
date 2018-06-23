@@ -41,14 +41,35 @@ class DateRange extends React.Component {
 
     let periods = [];
     for (i = 0; i < dates.length; i++) {
+      // console.log(dates[i]);
       let date = new Date(dates[i]);
-      if (date.getDay() === 1) period = `${date} - ${date.setHours(168)}`
-      else if (date.getDay() === 2) period[i] = `${date.setHours(-24)} - ${date.setHours(144)}`
-      else if (date.getDay() === 3) period[i] = `${date.setHours(-48)} - ${date.setHours(120)}`
-      else if (date.getDay() === 4) period[i] = `${date.setHours(-48)} - ${date.setHours(120)}`
-      else if (date.getDay() === 5) period[i] = `${date.setHours(-72)} - ${date.setHours(96)}`
-      else if (date.getDay() === 6) period[i] = `${date.setHours(-96)} - ${date.setHours(72)}`
-      else if (date.getDay() === 0) period[i] = `${date.setHours(-120)} - ${date.setHours(48)}`
+      console.log(date.getDay());
+      switch (date.getDay()) {
+        case 1:
+          periods[i] = `${new Date(date).toLocaleDateString()} - ${new Date(date.setHours(168)).toLocaleDateString()}`
+          break;
+        case 2:
+          periods[i] = `${new Date(date.setHours(-24))} - ${new Date(date.setHours(144)).toLocaleDateString()}`
+          break;
+        case 3:
+          periods[i] = `${new Date(date.setHours(-48))} - ${new Date(date.setHours(120)).toLocaleDateString()}`
+          break;
+        case 4:
+          periods[i] = `${new Date(date.setHours(-48))} - ${new Date(date.setHours(120)).toLocaleDateString()}`
+          break;
+        case 5:
+          periods[i] = `${new Date(date.setHours(-72))} - ${new Date(date.setHours(96)).toLocaleDateString()}`
+          break;
+        case 6:
+          periods[i] = `${new Date(date.setHours(-96)).toLocaleDateString()} - ${new Date(date.setHours(72)).toLocaleDateString()}`
+          break;
+        case 0:
+          periods[i] = `${new Date(date.setHours(-120))} - ${new Date(date.setHours(48)).toLocaleDateString()}`
+          break;
+        // default:
+        //   return;
+
+      }
 
       // let n = periods.length, a = periods.length, b;
       // do {
