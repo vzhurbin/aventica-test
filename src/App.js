@@ -1,35 +1,35 @@
 import React from 'react';
 
 
-const getMondaySunday = (inputDate) => {
-  const date = new Date(inputDate)
-  const weekDay = date.getDay();
+const getMondaySunday = (date) => {
+  const newDate = new Date(date)
+  const weekDay = newDate.getDay();
   const daysSinceMonday = weekDay === 0 ? 6 : weekDay - 1;
 
-  const monday = new Date(date.setDate(date.getDate() - daysSinceMonday)).toLocaleDateString();
-  const sunday = new Date(date.setDate(date.getDate() + 6)).toLocaleDateString();
+  const mondayMs = newDate.setDate(newDate.getDate() - daysSinceMonday);
+  const sundayMs = newDate.setDate(newDate.getDate() + 6);
 
   return {
-    monday: monday,
-    sunday: sunday,
+    monday: new Date(mondayMs).toLocaleDateString(),
+    sunday: new Date(sundayMs).toLocaleDateString(),
   }
 }
 
 class DateRange extends React.Component {
   componentWillMount() {
-    const date = this.getTime();
+    const date = this.syncTime();
     this.setState({
       date: Date.now(),
       updateTime: date,
     })
   }
 
-  getTime = () => {
+  syncTime = () => {
     // let xhr = new XMLHttpRequest();
     // xhr.open("GET", "https://yandex.com/time/sync.json?geo=213");
     // xhr.send();
-    // return new Date(JSON.parse(xmlHttp.responseText).time)
-    return new Date(Date.now());
+    // return JSON.parse(xmlHttp.responseText).time
+    return Date.now();
   }
 
   onChange = (value) => {
@@ -38,7 +38,7 @@ class DateRange extends React.Component {
       this.setState({ date: newDate })
     }
 
-    const date = this.getTime();
+    const date = this.syncTime();
     this.setState({
       updateTime: date,
     })
@@ -52,38 +52,16 @@ class DateRange extends React.Component {
     let i, dates = [];
     const week = 3600000 * 168;
     for (i = +period.start; i < +period.end; i += week) {
-      dates.push(i)
-    }
-
-    let periods = [];
-    for (i = 0; i < dates.length; i++) {
-      const date = new Date(dates[i]);
+      const date = new Date(i);
       const { monday, sunday } = getMondaySunday(date);
-      periods[i] = `${monday} - ${sunday}`
-
-      //   let len = periods.length, a = periods.length, b;
-      //   do {
-      //     b = false;
-      //     a /= 1.3;
-      //     if (a === 9 || a === 10) a = 11;
-      //     if (a < 1) a = 1;
-      //     for (i = 0; i < len - a; ++i) {
-      //       if (periods[i] > periods[i + a]) {
-      //         b = true;
-      //         let t = periods[i + a];
-      //         periods[i + a] = periods[i];
-      //         periods[i] = t;
-      //       }
-      //     }
-      //   } while (a > 1 || b);
-
+      dates.push(`${monday} - ${sunday}`)
     }
 
-    return periods;
+    return dates;
   }
 
   toggleFocus = (state) => {
-    this.setState({ isFocused: !state })
+    this.setState({ focused: !state })
   }
 
   createPeriod = (date) => {
@@ -95,29 +73,38 @@ class DateRange extends React.Component {
     }
   }
 
-  render() {
-    const { date, updateTime, isFocused } = this.state;
-    const day = updateTime.getDate();
-    const rawMonth = updateTime.getMonth() + 1;
+  getDatePlaceholder = (date) => {
+    const d = new Date(date);
+    const rawMonth = d.getMonth() + 1;
     const month = rawMonth > 9 ? rawMonth : `0${rawMonth}`;
+
+    return `${d.getFullYear()}-${month}-${d.getDate()}`;
+  }
+
+  render() {
+    const { date, updateTime, focused } = this.state;
+    const placeholder = this.getDatePlaceholder(date);
     const period = this.createPeriod(date);
-    const periodList = this.createItems(period)
-    const color = isFocused ? '#f00' : '#fff';
+    const periodList = this.createItems(period);
+    const bgColor = focused ? '#f00' : '#fff';
 
     return (
       <div>
         <div>
           <input
             type="date"
-            style={{ backgroundColor: color }}
+            value={placeholder}
+            style={{ backgroundColor: bgColor }}
             onChange={(event) => { this.onChange(event.target.value) }}
-            onFocus={() => this.toggleFocus(isFocused)}
-            onBlur={() => this.toggleFocus(isFocused)}
+            onFocus={() => this.toggleFocus(focused)}
+            onBlur={() => this.toggleFocus(focused)}
           />
         </div>
+        <hr />
         <div>
-          {`Последнее изменение: ${day}.${month}`}
+          {`Последнее изменение: ${new Date(updateTime).toLocaleString()}`}
         </div>
+        <hr />
         <div>
           {this.renderItems(periodList)}
         </div>
