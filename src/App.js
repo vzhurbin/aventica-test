@@ -14,6 +14,22 @@ const getMondaySunday = (date) => {
   }
 }
 
+const syncTime = () => {
+  fetch('https://yandex.com/time/sync.json?geo=213')
+    .then(res => {
+      if (res.ok) {
+        return res.json();
+      } else {
+        return Promise.reject({
+          status: res.status,
+          statusText: res.statusText
+        });
+      }
+    })
+    .then(res => console.log(res))
+    .catch((err) => console.log('Fetch error: ', err.message))
+};
+
 class DateRange extends React.Component {
   state = {
     date: '',
@@ -25,14 +41,6 @@ class DateRange extends React.Component {
     this.refs.input.focus()
   }
 
-  syncTime = () => {
-    // let xhr = new XMLHttpRequest();
-    // xhr.open("GET", "https://yandex.com/time/sync.json?geo=213");
-    // xhr.send();
-    // return JSON.parse(xmlHttp.responseText).time
-    return Date.now();
-  }
-
   onChange = (value) => {
     const { date } = this.state;
     const inputDate = new Date(value).getTime();
@@ -40,7 +48,7 @@ class DateRange extends React.Component {
 
     this.setState({
       date: newDate,
-      updateTime: this.syncTime(),
+      updateTime: syncTime() || Date.now(),
     })
   }
 
@@ -53,8 +61,8 @@ class DateRange extends React.Component {
 
   createItems = (period) => {
     let i, dates = [];
-    const week = 3600000 * 168;
-    for (i = +period.start; i < +period.end; i += week) {
+    const weekMs = 3600000 * 168;
+    for (i = +period.start; i < +period.end; i += weekMs) {
       const date = new Date(i);
       const { monday, sunday } = getMondaySunday(date);
       dates.push(`${monday} - ${sunday}`)
@@ -94,7 +102,7 @@ class DateRange extends React.Component {
         </div>
         <hr />
         <div>
-          {`Последнее изменение: ${new Date(updateTime).toLocaleString()}`}
+          {`Последнее изменение: ${updateTime ? new Date(updateTime).toLocaleString() : ''}`}
         </div>
         <hr />
         <div>
