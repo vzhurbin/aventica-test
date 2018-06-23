@@ -1,5 +1,20 @@
 import React from 'react';
 
+
+const getMondaySunday = (inputDate) => {
+  const date = new Date(inputDate)
+  const weekDay = date.getDay();
+  const daysSinceMonday = weekDay === 0 ? 6 : weekDay - 1;
+
+  const monday = new Date(date.setDate(date.getDate() - daysSinceMonday)).toLocaleDateString();
+  const sunday = new Date(date.setDate(date.getDate() + 6)).toLocaleDateString();
+
+  return {
+    monday: monday,
+    sunday: sunday,
+  }
+}
+
 class DateRange extends React.Component {
   componentWillMount() {
     const date = this.getTime();
@@ -35,40 +50,16 @@ class DateRange extends React.Component {
 
   createItems = (period) => {
     let i, dates = [];
-    for (i = +period.start; i < +period.end; i += 3600000 * 168) {
+    const week = 3600000 * 168;
+    for (i = +period.start; i < +period.end; i += week) {
       dates.push(i)
     }
 
     let periods = [];
     for (i = 0; i < dates.length; i++) {
-      let date = new Date(dates[i]);
-      console.log(date.getDay());
-      // console.log(new Date(date.setHours(-96)).getDay());
-      switch (date.getDay()) {
-        case 1:
-          periods[i] = `${new Date(date).toLocaleDateString()} - ${new Date(date.setHours(168)).toLocaleDateString()}`
-          break;
-        case 2:
-          periods[i] = `${new Date(date.setHours(-24)).toLocaleDateString()} - ${new Date(date.setHours(144)).toLocaleDateString()}`
-          break;
-        case 3:
-          periods[i] = `${new Date(date.setHours(-48)).toLocaleDateString()} - ${new Date(date.setHours(120)).toLocaleDateString()}`
-          break;
-        case 4:
-          periods[i] = `${new Date(date.setHours(-48)).toLocaleDateString()} - ${new Date(date.setHours(120)).toLocaleDateString()}`
-          break;
-        case 5:
-          periods[i] = `${new Date(date.setHours(-72)).toLocaleDateString()} - ${new Date(date.setHours(96)).toLocaleDateString()}`
-          break;
-        case 6:
-          periods[i] = `${new Date(date.setHours(-96)).toLocaleDateString()} - ${new Date(date.setHours(144)).toLocaleDateString()}`
-          break;
-        case 0:
-          periods[i] = `${new Date(date.setHours(-120)).toLocaleDateString()} - ${new Date(date.setHours(48)).toLocaleDateString()}`
-          break;
-        default:
-          break;
-      }
+      const date = new Date(dates[i]);
+      const { monday, sunday } = getMondaySunday(date);
+      periods[i] = `${monday} - ${sunday}`
 
       //   let len = periods.length, a = periods.length, b;
       //   do {
@@ -110,6 +101,7 @@ class DateRange extends React.Component {
     const rawMonth = updateTime.getMonth() + 1;
     const month = rawMonth > 9 ? rawMonth : `0${rawMonth}`;
     const period = this.createPeriod(date);
+    const periodList = this.createItems(period)
     const color = isFocused ? '#f00' : '#fff';
 
     return (
@@ -127,11 +119,10 @@ class DateRange extends React.Component {
           {`Последнее изменение: ${day}.${month}`}
         </div>
         <div>
-          {this.renderItems(this.createItems(period))}
+          {this.renderItems(periodList)}
         </div>
       </div>)
   }
 }
-
 
 export default DateRange;
