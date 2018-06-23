@@ -41,49 +41,51 @@ class DateRange extends React.Component {
 
     let periods = [];
     for (i = 0; i < dates.length; i++) {
-      // console.log(dates[i]);
       let date = new Date(dates[i]);
       console.log(date.getDay());
+      // console.log(new Date(date.setHours(-96)).getDay());
       switch (date.getDay()) {
         case 1:
           periods[i] = `${new Date(date).toLocaleDateString()} - ${new Date(date.setHours(168)).toLocaleDateString()}`
           break;
         case 2:
-          periods[i] = `${new Date(date.setHours(-24))} - ${new Date(date.setHours(144)).toLocaleDateString()}`
+          periods[i] = `${new Date(date.setHours(-24)).toLocaleDateString()} - ${new Date(date.setHours(144)).toLocaleDateString()}`
           break;
         case 3:
-          periods[i] = `${new Date(date.setHours(-48))} - ${new Date(date.setHours(120)).toLocaleDateString()}`
+          periods[i] = `${new Date(date.setHours(-48)).toLocaleDateString()} - ${new Date(date.setHours(120)).toLocaleDateString()}`
           break;
         case 4:
-          periods[i] = `${new Date(date.setHours(-48))} - ${new Date(date.setHours(120)).toLocaleDateString()}`
+          periods[i] = `${new Date(date.setHours(-48)).toLocaleDateString()} - ${new Date(date.setHours(120)).toLocaleDateString()}`
           break;
         case 5:
-          periods[i] = `${new Date(date.setHours(-72))} - ${new Date(date.setHours(96)).toLocaleDateString()}`
+          periods[i] = `${new Date(date.setHours(-72)).toLocaleDateString()} - ${new Date(date.setHours(96)).toLocaleDateString()}`
           break;
         case 6:
-          periods[i] = `${new Date(date.setHours(-96)).toLocaleDateString()} - ${new Date(date.setHours(72)).toLocaleDateString()}`
+          periods[i] = `${new Date(date.setHours(-96)).toLocaleDateString()} - ${new Date(date.setHours(144)).toLocaleDateString()}`
           break;
         case 0:
-          periods[i] = `${new Date(date.setHours(-120))} - ${new Date(date.setHours(48)).toLocaleDateString()}`
+          periods[i] = `${new Date(date.setHours(-120)).toLocaleDateString()} - ${new Date(date.setHours(48)).toLocaleDateString()}`
           break;
-        // default:
-        //   return;
-
+        default:
+          break;
       }
 
-      // let n = periods.length, a = periods.length, b;
-      // do {
-      //   b = false;
-      //   a /= 1.3;
-      //   if (a == 9 || a == 10) a = 11;
-      //   if (a < 1) a = 1;
-      //   for (i = 0; i < n - a; ++i) {
-      //     if (periods[i] > periods[i + a]) {
-      //       b = true;
-      //       let t = periods[i + a]; periods[i + a] = periods[i]; periods[i] = t;
+      //   let len = periods.length, a = periods.length, b;
+      //   do {
+      //     b = false;
+      //     a /= 1.3;
+      //     if (a === 9 || a === 10) a = 11;
+      //     if (a < 1) a = 1;
+      //     for (i = 0; i < len - a; ++i) {
+      //       if (periods[i] > periods[i + a]) {
+      //         b = true;
+      //         let t = periods[i + a];
+      //         periods[i + a] = periods[i];
+      //         periods[i] = t;
+      //       }
       //     }
-      //   }
-      // } while (a > 1 || b);
+      //   } while (a > 1 || b);
+
     }
 
     return periods;
