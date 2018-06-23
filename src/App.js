@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 const getMondaySunday = (date) => {
   const newDate = new Date(date)
   const weekDay = newDate.getDay();
@@ -16,12 +15,14 @@ const getMondaySunday = (date) => {
 }
 
 class DateRange extends React.Component {
-  componentWillMount() {
-    const date = this.syncTime();
-    this.setState({
-      date: Date.now(),
-      updateTime: date,
-    })
+  state = {
+    date: '',
+    updateTime: '',
+    focused: false,
+  }
+
+  componentDidMount() {
+    this.refs.input.focus()
   }
 
   syncTime = () => {
@@ -33,19 +34,21 @@ class DateRange extends React.Component {
   }
 
   onChange = (value) => {
-    const newDate = new Date(value).getTime();
-    if (this.state.date !== newDate) {
-      this.setState({ date: newDate })
-    }
+    const { date } = this.state;
+    const inputDate = new Date(value).getTime();
+    const newDate = date !== inputDate ? inputDate : date;
 
-    const date = this.syncTime();
     this.setState({
-      updateTime: date,
+      date: newDate,
+      updateTime: this.syncTime(),
     })
   }
 
   renderItems = (items) => {
-    return <div>{items.map((value, index) => <div key={index}>{value}</div>)}</div>
+    return (
+      <div>
+        {items.map((value, index) => <div key={index}>{value}</div>)}
+      </div>)
   }
 
   createItems = (period) => {
@@ -73,19 +76,8 @@ class DateRange extends React.Component {
     }
   }
 
-  getDatePlaceholder = (date) => {
-    const d = new Date(date);
-    const rawMonth = d.getMonth() + 1;
-    const month = rawMonth > 9 ? rawMonth : `0${rawMonth}`;
-
-    return `${d.getFullYear()}-${month}-${d.getDate()}`;
-  }
-
   render() {
     const { date, updateTime, focused } = this.state;
-    const placeholder = this.getDatePlaceholder(date);
-    const period = this.createPeriod(date);
-    const periodList = this.createItems(period);
     const bgColor = focused ? '#f00' : '#fff';
 
     return (
@@ -93,7 +85,7 @@ class DateRange extends React.Component {
         <div>
           <input
             type="date"
-            value={placeholder}
+            ref="input"
             style={{ backgroundColor: bgColor }}
             onChange={(event) => { this.onChange(event.target.value) }}
             onFocus={() => this.toggleFocus(focused)}
@@ -106,7 +98,9 @@ class DateRange extends React.Component {
         </div>
         <hr />
         <div>
-          {this.renderItems(periodList)}
+          {date
+            ? this.renderItems(this.createItems(this.createPeriod(date)))
+            : null}
         </div>
       </div>)
   }
