@@ -1,14 +1,6 @@
-// @flow
 import React from 'react';
 
-type Props = {};
-type State = {
-  date: ?number,
-  updateTime: ?Date,
-  isFocused: boolean,
-}
-
-class DateRange extends React.Component<Props, State> {
+class DateRange extends React.Component {
   componentWillMount() {
     const date = this.getTime();
     this.setState({
@@ -25,7 +17,7 @@ class DateRange extends React.Component<Props, State> {
     return new Date(Date.now());
   }
 
-  onChange = (value: string) => {
+  onChange = (value) => {
     const newDate = new Date(value).getTime();
     if (this.state.date !== newDate) {
       this.setState({ date: newDate })
@@ -37,11 +29,11 @@ class DateRange extends React.Component<Props, State> {
     })
   }
 
-  renderItems = (items: number[]) => {
+  renderItems = (items) => {
     return <div>{items.map((value, index) => <div key={index}>{value}</div>)}</div>
   }
 
-  createItems = (period: { start: ?number, end: ?number }) => {
+  createItems = (period) => {
     let i, dates = [];
     for (i = +period.start; i < +period.end; i += 3600000 * 168) {
       dates.push(i)
@@ -50,13 +42,13 @@ class DateRange extends React.Component<Props, State> {
     let periods = [];
     for (i = 0; i < dates.length; i++) {
       let date = new Date(dates[i]);
-      if (date.getDay() == 1) period = `${date} - ${date.setHours(168)}`
-      else if (date.getDay() == 2) period[i] = `${date.setHours(-24)} - ${date.setHours(144)}`
-      else if (date.getDay() == 3) period[i] = `${date.setHours(-48)} - ${date.setHours(120)}`
-      else if (date.getDay() == 4) period[i] = `${date.setHours(-48)} - ${date.setHours(120)}`
-      else if (date.getDay() == 5) period[i] = `${date.setHours(-72)} - ${date.setHours(96)}`
-      else if (date.getDay() == 6) period[i] = `${date.setHours(-96)} - ${date.setHours(72)}`
-      else if (date.getDay() == 0) period[i] = `${date.setHours(-120)} - ${date.setHours(48)}`
+      if (date.getDay() === 1) period = `${date} - ${date.setHours(168)}`
+      else if (date.getDay() === 2) period[i] = `${date.setHours(-24)} - ${date.setHours(144)}`
+      else if (date.getDay() === 3) period[i] = `${date.setHours(-48)} - ${date.setHours(120)}`
+      else if (date.getDay() === 4) period[i] = `${date.setHours(-48)} - ${date.setHours(120)}`
+      else if (date.getDay() === 5) period[i] = `${date.setHours(-72)} - ${date.setHours(96)}`
+      else if (date.getDay() === 6) period[i] = `${date.setHours(-96)} - ${date.setHours(72)}`
+      else if (date.getDay() === 0) period[i] = `${date.setHours(-120)} - ${date.setHours(48)}`
 
       // let n = periods.length, a = periods.length, b;
       // do {
@@ -76,20 +68,17 @@ class DateRange extends React.Component<Props, State> {
     return periods;
   }
 
-  toggleFocus = (state: boolean) => {
+  toggleFocus = (state) => {
     this.setState({ isFocused: !state })
   }
 
-  createPeriod = (date: ?number) => {
+  createPeriod = (date) => {
     let newDate = new Date(date);
     newDate.setFullYear(newDate.getFullYear() + 1);
     return {
-      start: Date,
-      end: Date,
-    } = {
-        start: date,
-        end: newDate.getTime(),
-      }
+      start: date,
+      end: newDate.getTime(),
+    }
   }
 
   render() {

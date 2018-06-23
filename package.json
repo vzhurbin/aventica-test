@@ -13,8 +13,5 @@
     "flow": "flow",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
-  },
-  "devDependencies": {
-    "flow-bin": "^0.75.0"
   }
 }
