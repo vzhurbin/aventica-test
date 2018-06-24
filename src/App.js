@@ -127,7 +127,11 @@ class DateRange extends React.Component {
         </div>
         <hr />
         <div>
-          {`Последнее изменение: ${updateTime ? new Date(updateTime).toLocaleString() : ''}`}
+          {`Последнее изменение: ${
+            updateTime
+              ? new Date(updateTime).toLocaleString()
+              : ''}
+          `}
         </div>
         <hr />
         <div>
