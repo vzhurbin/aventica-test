@@ -1,19 +1,32 @@
 import React from 'react';
 
+// Вынес функции-помощники за пределы класса
+
+// Заменил длинный и многословный метод для создания периодов
 const getMondaySunday = (date) => {
   const newDate = new Date(date)
   const weekDay = newDate.getDay();
+  // getDay считает дни с 0, начиная с воскресенья
   const daysSinceMonday = weekDay === 0 ? 6 : weekDay - 1;
 
   const mondayMs = newDate.setDate(newDate.getDate() - daysSinceMonday);
+  // newDate теперь понедельник, поэтому воскресенье найти проще
   const sundayMs = newDate.setDate(newDate.getDate() + 6);
 
+  // возвращаем даты в нужном для отображения формате
   return {
     monday: new Date(mondayMs).toLocaleDateString(),
     sunday: new Date(sundayMs).toLocaleDateString(),
   }
 }
 
+/* данный API не разрешает запросы с других сайтов
+  (не только из-за CORS с localhost, но и с хостинга Firebase),
+  поэтому как запасной вариант использовал простой Date.now()
+
+  Использовал более новый/удобный fetch вместо xhr
+  и добавил обработку ошибок
+*/
 const syncTime = () => {
   fetch('https://yandex.com/time/sync.json?geo=213')
     .then(res => {
@@ -31,14 +44,18 @@ const syncTime = () => {
 };
 
 class DateRange extends React.Component {
+  // нет необходимости в значениях date и updateTime
+  // при первом рендере
   state = {
     date: '',
     updateTime: '',
     focused: false,
   }
 
+  // текущий стандарт использования рефов
   inputRef = React.createRef();
 
+  // расположение методов в порядке, рекомендованном airbnb
   componentDidMount() {
     this.inputRef.current.focus()
   }
@@ -50,6 +67,7 @@ class DateRange extends React.Component {
 
     this.setState({
       date: newDate,
+      // если апи не сработает, используем запасной вариант
       updateTime: syncTime() || Date.now(),
     })
   }
@@ -61,6 +79,9 @@ class DateRange extends React.Component {
       </div>)
   }
 
+  // вынес функцию поиска пн-вс
+  // не увидел необходимости в доп. сортировке с do/while
+  // получился один цикл вместо трех
   createItems = (period) => {
     let i, dates = [];
     const weekMs = 3600000 * 168;
@@ -73,6 +94,7 @@ class DateRange extends React.Component {
     return dates;
   }
 
+  // добавил метод для управления состоянием фокуса
   toggleFocus = (state) => {
     this.setState({ focused: !state })
   }
@@ -86,6 +108,7 @@ class DateRange extends React.Component {
     }
   }
 
+  // использовал jsx вместо createElement
   render() {
     const { date, updateTime, focused } = this.state;
     const bgColor = focused ? '#f00' : '#fff';
