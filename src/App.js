@@ -37,8 +37,10 @@ class DateRange extends React.Component {
     focused: false,
   }
 
+  inputRef = React.createRef();
+
   componentDidMount() {
-    this.refs.input.focus()
+    this.inputRef.current.focus()
   }
 
   onChange = (value) => {
@@ -93,7 +95,7 @@ class DateRange extends React.Component {
         <div>
           <input
             type="date"
-            ref="input"
+            ref={this.inputRef}
             style={{ backgroundColor: bgColor }}
             onChange={(event) => { this.onChange(event.target.value) }}
             onFocus={() => this.toggleFocus(focused)}
