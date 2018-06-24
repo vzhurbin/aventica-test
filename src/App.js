@@ -57,7 +57,9 @@ class DateRange extends React.Component {
 
   // расположение методов в порядке, рекомендованном airbnb
   componentDidMount() {
-    this.inputRef.current.focus()
+    if (this.inputRef.current) {
+      this.inputRef.current.focus();
+    }
   }
 
   onChange = (value) => {
