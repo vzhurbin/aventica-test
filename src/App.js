@@ -44,8 +44,8 @@ const syncTime = () => {
 };
 
 export default class DateRange extends React.Component {
-  // нет необходимости в значениях date и updateTime
-  // при первом рендере
+  // В текущей реализации нет необходимости
+  // в значениях date и updateTime при первом рендере
   state = {
     date: undefined,
     focused: undefined,
@@ -82,9 +82,9 @@ export default class DateRange extends React.Component {
       </div>)
   }
 
-  // вынес функцию поиска пн-вс
   // не увидел необходимости в доп. сортировке с do/while
   // получился один цикл вместо трех
+  // вынес функцию поиска пн-вс
   createItems = (period) => {
     const dates = [];
     const weekMs = 3600000 * 168;
