@@ -43,19 +43,20 @@ const syncTime = () => {
     .catch((err) => console.log('Fetch error: ', err.message))
 };
 
-class DateRange extends React.Component {
+export default class DateRange extends React.Component {
   // нет необходимости в значениях date и updateTime
   // при первом рендере
   state = {
-    date: '',
-    updateTime: '',
-    focused: false,
+    date: undefined,
+    focused: undefined,
+    updateTime: undefined,
   }
 
   // текущий стандарт использования рефов
   inputRef = React.createRef();
 
-  // расположение методов в порядке, рекомендованном airbnb
+  // Методы расположены в порядке, рекомендованном airbnb
+
   componentDidMount() {
     if (this.inputRef.current) {
       this.inputRef.current.focus();
@@ -85,11 +86,10 @@ class DateRange extends React.Component {
   // не увидел необходимости в доп. сортировке с do/while
   // получился один цикл вместо трех
   createItems = (period) => {
-    let i, dates = [];
+    const dates = [];
     const weekMs = 3600000 * 168;
-    for (i = +period.start; i < +period.end; i += weekMs) {
-      const date = new Date(i);
-      const { monday, sunday } = getMondaySunday(date);
+    for (let i = +period.start; i < +period.end; i += weekMs) {
+      const { monday, sunday } = getMondaySunday(i);
       dates.push(`${monday} - ${sunday}`)
     }
 
@@ -102,11 +102,11 @@ class DateRange extends React.Component {
   }
 
   createPeriod = (date) => {
-    let newDate = new Date(date);
+    const newDate = new Date(date);
     newDate.setFullYear(newDate.getFullYear() + 1);
     return {
-      start: date,
       end: newDate.getTime(),
+      start: date,
     }
   }
 
@@ -144,5 +144,3 @@ class DateRange extends React.Component {
       </div>)
   }
 }
-
-export default DateRange;
