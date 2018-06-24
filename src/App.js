@@ -62,9 +62,9 @@ class DateRange extends React.Component {
     }
   }
 
-  onChange = (value) => {
+  onChange = (e) => {
     const { date } = this.state;
-    const inputDate = new Date(value).getTime();
+    const inputDate = new Date(e.target.value).getTime();
     const newDate = date !== inputDate ? inputDate : date;
 
     this.setState({
@@ -97,8 +97,8 @@ class DateRange extends React.Component {
   }
 
   // добавил метод для управления состоянием фокуса
-  toggleFocus = (state) => {
-    this.setState({ focused: !state })
+  toggleFocus = (state) => () => {
+    this.setState({ focused: state })
   }
 
   createPeriod = (date) => {
@@ -122,9 +122,9 @@ class DateRange extends React.Component {
             type="date"
             ref={this.inputRef}
             style={{ backgroundColor: bgColor }}
-            onChange={(event) => { this.onChange(event.target.value) }}
-            onFocus={() => this.toggleFocus(focused)}
-            onBlur={() => this.toggleFocus(focused)}
+            onChange={this.onChange}
+            onFocus={this.toggleFocus(true)}
+            onBlur={this.toggleFocus(false)}
           />
         </div>
         <hr />
